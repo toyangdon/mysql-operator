@@ -43,25 +43,32 @@ RUN wget -nv https://github.com/ncw/rclone/releases/download/v${RCLONE_VERSION}/
 ###############################################################################
 #  Docker image for sidecar containers
 ###############################################################################
+FROM ubuntu:20.04  as sidecar
+RUN  apt update \
+    && apt install -y  --no-install-recommends git build-essential flex bison automake autoconf \
+libtool cmake libaio-dev mysql-client libncurses-dev zlib1g-dev \
+libgcrypt20-dev libev-dev libcurl4-gnutls-dev vim-common libssl-dev unzip default-mysql-client
+    && rm -rf /var/lib/apt/lists/*
 
-FROM debian:buster-slim as sidecar
+RUN git clone https://github.com/percona/percona-xtrabackup.git -b 8.0 --depth=1 \
+    && cd percona-xtrabackup
+    && mkdir build
+    && cd build
+    
+RUN cmake -DWITH_BOOST=/tmp -DDOWNLOAD_BOOST=ON -DBUILD_CONFIG=xtrabackup_release -DWITH_MAN_PAGES=OFF -S .. -B .
+RUN make install
+
+#FROM debian:buster-slim as sidecar
 
 RUN groupadd -g 999 mysql
 RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
     -c "Default Application User" mysql
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        apt-transport-https ca-certificates pigz wget \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update \
+#    && apt-get install -y --no-install-recommends \
+#        apt-transport-https ca-certificates pigz wget \
+#    && rm -rf /var/lib/apt/lists/*
 
-COPY hack/docker/percona.gpg /etc/apt/trusted.gpg.d/percona.gpg
-RUN echo 'deb https://repo.percona.com/apt buster main' > /etc/apt/sources.list.d/percona.list
-
-ARG XTRABACKUP_PKG=percona-xtrabackup-24
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        percona-toolkit ${XTRABACKUP_PKG} unzip default-mysql-client
 
 
 USER mysql
