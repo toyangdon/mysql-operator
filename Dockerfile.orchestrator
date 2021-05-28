@@ -37,7 +37,7 @@ RUN set -ex \
 
 WORKDIR $GOPATH/src/github.com/openark/orchestrator
 
-RUN set -ex && ./build.sh -b -P
+RUN set -ex && ./build.sh -b -a arm64 -P
 
 
 ###############################################################################
