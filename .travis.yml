@@ -11,8 +11,8 @@ before_install:
 script: 
   - export pwd=$PWD && echo $PWD
   - docker build . -f Dockerfile -t toyangdon/mysql-operator:$(BUILD_TAG)
-	- docker build . -f Dockerfile.orchestrator -t toyangdon/orchestrator:$(BUILD_TAG)
-	- docker build . -f Dockerfile.sidecar -t toyangdon/mysql-helper:$(BUILD_TAG)
+  - docker build . -f Dockerfile.orchestrator -t toyangdon/orchestrator:$(BUILD_TAG)
+  - docker build . -f Dockerfile.sidecar -t toyangdon/mysql-helper:$(BUILD_TAG)
   - docker push toyangdon/mysql-operator:$(BUILD_TAG)
   - docker push toyangdon/orchestrator:$(BUILD_TAG)
   - docker push toyangdon/mysql-helper:$(BUILD_TAG)
