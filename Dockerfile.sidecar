@@ -11,9 +11,9 @@ COPY cmd/    cmd/
 COPY go.mod go.sum ./
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o mysql-operator github.com/presslabs/mysql-operator/cmd/mysql-operator
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o mysql-operator-sidecar github.com/presslabs/mysql-operator/cmd/mysql-operator-sidecar
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o orc-helper github.com/presslabs/mysql-operator/cmd/orc-helper
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o mysql-operator github.com/presslabs/mysql-operator/cmd/mysql-operator
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o mysql-operator-sidecar github.com/presslabs/mysql-operator/cmd/mysql-operator-sidecar
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o orc-helper github.com/presslabs/mysql-operator/cmd/orc-helper
 
 
 ###############################################################################
@@ -31,12 +31,12 @@ RUN gpg --import /root/rclone.gpg
 
 ENV RCLONE_VERSION=1.53.1
 
-RUN wget -nv https://github.com/ncw/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.zip \
+RUN wget -nv https://github.com/ncw/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-arm64.zip \
     && wget -nv https://github.com/ncw/rclone/releases/download/v${RCLONE_VERSION}/SHA256SUMS \
     && gpg --verify --output=- SHA256SUMS > sums \
     && sha256sum -c --ignore-missing sums \
-    && unzip rclone-*-linux-amd64.zip \
-    && mv rclone-*-linux-amd64/rclone /usr/local/bin/ \
+    && unzip rclone-*-linux-arm64.zip \
+    && mv rclone-*-linux-arm64/rclone /usr/local/bin/ \
     && chmod 755 /usr/local/bin/rclone
 
 
