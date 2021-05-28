@@ -10,9 +10,9 @@ COPY cmd/    cmd/
 COPY go.mod go.sum ./
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o mysql-operator github.com/presslabs/mysql-operator/cmd/mysql-operator
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o mysql-operator-sidecar github.com/presslabs/mysql-operator/cmd/mysql-operator-sidecar
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o orc-helper github.com/presslabs/mysql-operator/cmd/orc-helper
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o mysql-operator github.com/presslabs/mysql-operator/cmd/mysql-operator
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o mysql-operator-sidecar github.com/presslabs/mysql-operator/cmd/mysql-operator-sidecar
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o orc-helper github.com/presslabs/mysql-operator/cmd/orc-helper
 
 ###############################################################################
 #  Docker image for operator
