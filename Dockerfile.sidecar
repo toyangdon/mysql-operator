@@ -43,22 +43,23 @@ RUN wget -nv https://github.com/ncw/rclone/releases/download/v${RCLONE_VERSION}/
 ###############################################################################
 #  Docker image for sidecar containers
 ###############################################################################
-FROM ubuntu:20.04  as sidecar
-RUN  apt update \
-    && apt install -y  --no-install-recommends git build-essential flex bison automake autoconf \
-libtool cmake libaio-dev mysql-client libncurses-dev zlib1g-dev \
-libgcrypt20-dev libev-dev libcurl4-gnutls-dev vim-common libssl-dev unzip default-mysql-client \
-    && rm -rf /var/lib/apt/lists/*
+#FROM ubuntu:20.04  as sidecar
+#RUN  apt update \
+#    && apt install -y  --no-install-recommends git build-essential flex bison automake autoconf \
+#libtool cmake libaio-dev mysql-client libncurses-dev zlib1g-dev \
+#libgcrypt20-dev libev-dev libcurl4-gnutls-dev vim-common libssl-dev unzip default-mysql-client \
+#    && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/percona/percona-xtrabackup.git -b 8.0 --depth=1 \
-    && cd percona-xtrabackup \
-    && mkdir build \
-    && cd build \
-    && cmake -DWITH_BOOST=/tmp -DDOWNLOAD_BOOST=ON -DBUILD_CONFIG=xtrabackup_release -DWITH_MAN_PAGES=OFF -S .. -B . \
-    && make install
+#RUN git clone https://github.com/percona/percona-xtrabackup.git -b 8.0 --depth=1 \
+#    && cd percona-xtrabackup \
+#    && mkdir build \
+#    && cd build \
+#    && cmake -DWITH_BOOST=/tmp -DDOWNLOAD_BOOST=ON -DBUILD_CONFIG=xtrabackup_release -DWITH_MAN_PAGES=OFF -S .. -B . \
+#    && make install
 
 #FROM debian:buster-slim as sidecar
 
+FROM toyangdon/xtrabackup-arm64:just-file  as sidecar
 RUN groupadd -g 999 mysql
 RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
     -c "Default Application User" mysql
