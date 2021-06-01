@@ -44,22 +44,16 @@ RUN set -ex && ./build.sh -b -a arm64 -P
 #  Docker image for orchestrator
 ###############################################################################
 
-FROM alpine:3.12
+FROM toyangdon/dockerize:latest
 
 # Create a group and user
 RUN addgroup -g 777 orchestrator && adduser -u 777 -g 777 -S orchestrator
 
 ENV DOCKERIZE_VERSION v0.6.1
 RUN set -ex \
-    && apk add --update --no-cache \
-        curl \
-        wget \
-        tar \
-        openssl \
     && mkdir /etc/orchestrator /var/lib/orchestrator \
-    && chown -R 777:777 /etc/orchestrator /var/lib/orchestrator \
-    && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz -O- | \
-        tar -C /usr/local/bin -xzv
+    && chown -R 777:777 /etc/orchestrator /var/lib/orchestrator 
+
 
 COPY --chown=777:777 hack/docker/orchestrator/ /
 COPY --from=builder-orc /tmp/orchestrator-release/build/orchestrator/usr/local/orchestrator/ /usr/local/orchestrator/
