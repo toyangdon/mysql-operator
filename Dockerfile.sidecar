@@ -64,6 +64,11 @@ RUN groupadd -g 999 mysql
 RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
     -c "Default Application User" mysql
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        percona-toolkit \
+    && rm -rf /var/lib/apt/lists/*
+
 #RUN apt-get update \
 #    && apt-get install -y --no-install-recommends \
 #        apt-transport-https ca-certificates pigz wget \
