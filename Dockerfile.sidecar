@@ -66,7 +66,7 @@ RUN useradd -u 999 -r -g 999 -s /sbin/nologin \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        percona-toolkit \
+        percona-toolkit pigz \
     && rm -rf /var/lib/apt/lists/*
 
 #RUN apt-get update \
