@@ -42,6 +42,9 @@ url = ${HTTP_URL}
 type = azureblob
 account = ${AZUREBLOB_ACCOUNT}
 key = ${AZUREBLOB_KEY}
+
+[local]
+type = local
 EOF
 
 if [[ -n "${GCS_SERVICE_ACCOUNT_JSON_KEY:-}" ]]; then 
