@@ -227,7 +227,7 @@ func (s *jobSyncer) ensurePodSpec(in core.PodSpec) core.PodSpec {
 		in.Containers[0].VolumeMounts = []core.VolumeMount{
 			{
 				Name:      s.cluster.Name + "-backup",
-				MountPath: "/mysql-backup",
+				MountPath: strings.Split(s.backup.GetBackupURL(s.cluster), ":")[1],
 			},
 		}
 
