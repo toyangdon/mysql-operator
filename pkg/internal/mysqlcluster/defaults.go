@@ -126,6 +126,11 @@ func (cluster *MysqlCluster) SetDefaults(opt *options.Options) {
 	if len(cluster.Spec.XtrabackupTargetDir) == 0 {
 		cluster.Spec.XtrabackupTargetDir = "/tmp/xtrabackup_backupfiles/"
 	}
+
+	//set default backupPVC size
+	if &cluster.Spec.BackupPVCSize == nil {
+		cluster.Spec.BackupPVCSize = resource.MustParse("2Gi")
+	}
 }
 
 func setConfigIfNotSet(conf api.MysqlConf, option string, value intstr.IntOrString) {

@@ -120,6 +120,14 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
+	err = c.Watch(&source.Kind{Type: &corev1.PersistentVolumeClaim{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &mysqlv1alpha1.MysqlCluster{},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -238,6 +246,7 @@ func (r *ReconcileMysqlCluster) Reconcile(ctx context.Context, request reconcile
 
 	// run the syncers for services, pdb and statefulset
 	syncers := []syncer.Interface{
+		clustersyncer.NewPVCSyncer(r.Client, r.scheme, cluster),
 		clustersyncer.NewSecretSyncer(r.Client, r.scheme, cluster, r.opt),
 		clustersyncer.NewHeadlessSVCSyncer(r.Client, r.scheme, cluster),
 		clustersyncer.NewMasterSVCSyncer(r.Client, r.scheme, cluster),

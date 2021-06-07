@@ -221,7 +221,7 @@ func (s *jobSyncer) ensurePodSpec(in core.PodSpec) core.PodSpec {
 		in.Volumes[0].Name = "backup"
 		in.Volumes[0].VolumeSource = core.VolumeSource{
 			PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
-				ClaimName: s.cluster.Name + "-backup",
+				ClaimName: s.cluster.GetNameForResource(mysqlcluster.BackupPVC),
 			},
 		}
 		in.Containers[0].VolumeMounts = []core.VolumeMount{

@@ -95,6 +95,10 @@ type MysqlClusterSpec struct {
 	// +optional
 	BackupScheduleJobsHistoryLimit *int `json:"backupScheduleJobsHistoryLimit,omitempty"`
 
+	// set size for backup pvc that use for local type Backups
+	// +optional
+	BackupPVCSize resource.Quantity `json:"backupPVCSize,omitempty"`
+
 	// A map[string]string that will be passed to my.cnf file.
 	// +optional
 	MysqlConf MysqlConf `json:"mysqlConf,omitempty"`

@@ -120,6 +120,8 @@ const (
 	PodDisruptionBudget ResourceName = "pdb"
 	// Secret is the name of the "private" secret that contains operator related credentials
 	Secret ResourceName = "operated-secret"
+	//PVC is the name of backup persist volume resource for local type
+	BackupPVC ResourceName = "backup"
 )
 
 // GetNameForResource returns the name of a resource from above
@@ -142,6 +144,8 @@ func GetNameForResource(name ResourceName, clusterName string) string {
 		return fmt.Sprintf("%s-mysql-nodes", clusterName)
 	case Secret:
 		return fmt.Sprintf("%s-mysql-operated", clusterName)
+	case BackupPVC:
+		return fmt.Sprintf("%s-mysql-backup", clusterName)
 	default:
 		return fmt.Sprintf("%s-mysql", clusterName)
 	}
