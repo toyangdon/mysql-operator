@@ -215,6 +215,23 @@ func (s *jobSyncer) ensurePodSpec(in core.PodSpec) core.PodSpec {
 			},
 		}
 	}
+
+	if strings.HasPrefix(s.backup.GetBackupURL(s.cluster), "local") {
+		in.Volumes = make([]core.Volume, 1)
+		in.Volumes[0].Name = "backup"
+		in.Volumes[0].VolumeSource = core.VolumeSource{
+			PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
+				ClaimName: s.cluster.Name + "-backup",
+			},
+		}
+		in.Containers[0].VolumeMounts = []core.VolumeMount{
+			{
+				Name:      s.cluster.Name + "-backup",
+				MountPath: "/mysql-backup",
+			},
+		}
+
+	}
 	return in
 }
 
