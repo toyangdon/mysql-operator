@@ -96,6 +96,7 @@ type MysqlClusterSpec struct {
 	BackupScheduleJobsHistoryLimit *int `json:"backupScheduleJobsHistoryLimit,omitempty"`
 
 	// set size for backup pvc that use for local type Backups
+	// default to "2Gi"
 	// +optional
 	BackupPVCSize resource.Quantity `json:"backupPVCSize,omitempty"`
 
