@@ -230,6 +230,11 @@ func (s *jobSyncer) ensurePodSpec(in core.PodSpec) core.PodSpec {
 				MountPath: strings.Split(s.backup.GetBackupURL(s.cluster), ":")[1],
 			},
 		}
+		userId, groupId := int64(999), int64(999)
+		in.SecurityContext = &core.PodSecurityContext{
+			RunAsUser:  &userId,
+			RunAsGroup: &groupId,
+		}
 
 	}
 	return in
