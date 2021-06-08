@@ -227,7 +227,7 @@ func (s *jobSyncer) ensurePodSpec(in core.PodSpec) core.PodSpec {
 		in.Containers[0].VolumeMounts = []core.VolumeMount{
 			{
 				Name:      "backup",
-				MountPath: strings.Split(s.backup.GetBackupURL(s.cluster), ":")[1],
+				MountPath: "/backup",
 			},
 		}
 		//使用root用户

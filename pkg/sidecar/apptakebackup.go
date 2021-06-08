@@ -27,6 +27,10 @@ import (
 func RunTakeBackupCommand(cfg *Config, srcHost, destBucket string) error {
 	log.Info("take a backup", "host", srcHost, "bucket", destBucket)
 	destBucket = normalizeBucketURI(destBucket)
+	if strings.HasPrefix(destBucket, "local") {
+		sarr := strings.Split(destBucket, ":")
+		destBucket = sarr[0] + ":" + "/backup/" + sarr[1]
+	}
 	return pushBackupFromTo(cfg, srcHost, destBucket)
 }
 
