@@ -195,10 +195,7 @@ func (s *deletionJobSyncer) ensureContainers() []core.Container {
 
 	rcloneCommand = append(rcloneCommand, "delete", bucketForRclone(s.backup.Spec.BackupURL))
 
-	image := s.opt.SidecarMysql57Image
-	if s.cluster != nil {
-		image = s.cluster.GetSidecarImage()
-	}
+	image := s.cluster.GetSidecarImage()
 
 	container := core.Container{
 		Name:            "delete",
