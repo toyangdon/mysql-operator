@@ -147,7 +147,7 @@ func (s *deletionJobSyncer) ensurePodSpec() core.PodSpec {
 		serviceAccountName = s.cluster.Spec.PodSpec.ServiceAccountName
 	}
 
-	return core.PodSpec{
+	podSpec := core.PodSpec{
 		RestartPolicy: core.RestartPolicyNever,
 		Containers:    s.ensureContainers(),
 		ImagePullSecrets: []core.LocalObjectReference{
@@ -156,9 +156,37 @@ func (s *deletionJobSyncer) ensurePodSpec() core.PodSpec {
 		// set service account to this pod in order to be able to connect to remote storage if using workload identity
 		ServiceAccountName: serviceAccountName,
 	}
+	// if local type ，job need mount pvc which is named "backup"
+	if strings.HasPrefix(s.cluster.Spec.BackupURL, "local") {
+		fileMode := int32(0555)
+		podSpec.Volumes = make([]core.Volume, 1)
+		podSpec.Volumes[0].Name = "backup"
+		podSpec.Volumes[0].VolumeSource = core.VolumeSource{
+			PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
+				ClaimName: s.cluster.GetNameForResource(mysqlcluster.BackupPVC),
+			},
+		}
+		podSpec.Volumes[1].Name = "delete"
+		podSpec.Volumes[1].VolumeSource = core.VolumeSource{
+			ConfigMap: &core.ConfigMapVolumeSource{
+				LocalObjectReference: core.LocalObjectReference{
+					Name: s.cluster.GetNameForResource(mysqlcluster.ConfigMap),
+				},
+				DefaultMode: &fileMode,
+			},
+		}
+		//使用root用户
+		userId, groupId := int64(0), int64(0)
+		podSpec.SecurityContext = &core.PodSecurityContext{
+			RunAsUser:  &userId,
+			RunAsGroup: &groupId,
+		}
+	}
+	return podSpec
 }
 
 func (s *deletionJobSyncer) ensureContainers() []core.Container {
+
 	rcloneCommand := []string{"rclone", fmt.Sprintf("--config=%s", constants.RcloneConfigFile)}
 
 	if s.cluster != nil && len(s.cluster.Spec.RcloneExtraArgs) > 0 {
@@ -190,6 +218,22 @@ func (s *deletionJobSyncer) ensureContainers() []core.Container {
 				},
 			},
 		}
+	}
+
+	if strings.HasPrefix(s.cluster.Spec.BackupURL, "local") {
+		container.VolumeMounts = []core.VolumeMount{
+			{
+				Name:      "backup",
+				MountPath: constants.LocalPvcPath,
+			},
+			{
+				Name:      "delete",
+				MountPath: "/tmp",
+			},
+		}
+		container.Command = []string{"/tmp/" + constants.ShDeleteBackup}
+		rootPath := constants.LocalPvcPath + strings.Split(s.cluster.Spec.BackupURL, ":")[1]
+		container.Args = []string{rootPath, string(s.cluster.Spec.BackupSaveDays), constants.RcloneConfigFile}
 	}
 	return []core.Container{container}
 }

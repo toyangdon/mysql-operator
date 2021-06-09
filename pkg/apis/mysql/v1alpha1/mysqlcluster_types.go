@@ -100,6 +100,11 @@ type MysqlClusterSpec struct {
 	// +optional
 	BackupPVCSize resource.Quantity `json:"backupPVCSize,omitempty"`
 
+	// the max days to save for auto backup,just for local type
+	// default to 10
+	// +optional
+	BackupSaveDays int `json:"backupSaveDays,omitempty"`
+
 	// A map[string]string that will be passed to my.cnf file.
 	// +optional
 	MysqlConf MysqlConf `json:"mysqlConf,omitempty"`

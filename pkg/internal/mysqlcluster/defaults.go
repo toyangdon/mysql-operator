@@ -129,7 +129,12 @@ func (cluster *MysqlCluster) SetDefaults(opt *options.Options) {
 
 	//set default backupPVC size
 	if pvcSize := cluster.Spec.BackupPVCSize; pvcSize.IsZero() {
-		cluster.Spec.BackupPVCSize = resource.MustParse("2Gi")
+		pvcSize = resource.MustParse("2Gi")
+	}
+
+	//set default backupPVC size
+	if cluster.Spec.BackupSaveDays == 0 {
+		cluster.Spec.BackupSaveDays = 10
 	}
 }
 

@@ -52,13 +52,13 @@ func NewConfigMapSyncer(c client.Client, scheme *runtime.Scheme, cluster *mysqlc
 		}
 
 		cm.Data = map[string]string{
-			"my.cnf": data,
+			"my.cnf":       data,
+			ShDeleteBackup: BuildDeleteScript(),
 		}
 
 		if cluster.Spec.PodSpec.MysqlLifecycle == nil {
 			cm.Data[shPreStopFile] = buildBashPreStop()
 		}
-
 		return nil
 	})
 }
@@ -256,4 +256,28 @@ var mysqlMasterSlaveBooleanConfigs = []string{
 	// Safety
 	"skip-name-resolve",
 	"skip-host-cache",
+}
+
+func BuildDeleteScript() string {
+	data := `#!/bin/bash
+rclone --config=$3 ls $1 | while read line
+do 
+  file=$(echo ${line}|awk '{print$2}'); 
+  echo ${file}|grep  \\-auto\\- 1>/dev/null;
+  if [ $? -ne 0 ];then 
+    echo "info: skip ${file}"
+    continue;
+  fi; 
+  filedate=$(echo ${line#*auto-}|cut -d'.' -f1);
+  filedate1=$(date +%s -d "${filedate}");
+  comparedate=$(date +%s -d "-$2 days");
+  if [ ${comparedate} -gt ${filedate1} ];then 
+    echo "info: delete ${file}"
+    rclone --config=$3 delete  $1/${file}; 
+  else
+    echo "info: skip ${file}"  
+  fi
+done    
+`
+	return data
 }

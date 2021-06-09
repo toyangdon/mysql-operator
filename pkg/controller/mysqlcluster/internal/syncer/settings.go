@@ -64,6 +64,10 @@ const (
 	confClientPath = constants.ConfClientPath
 
 	shPreStopFile = constants.ShPreStop
+
+	LocalPvcPath = constants.LocalPvcPath
+
+	ShDeleteBackup = constants.ShDeleteBackup
 )
 
 var (

@@ -81,7 +81,7 @@ func (j *job) scheduledBackupsRunningCount() int {
 }
 
 func (j *job) createBackup() (*api.MysqlBackup, error) {
-	backupName := fmt.Sprintf("%s-auto-%s", j.ClusterName, time.Now().Format("2006-01-02t15-04-05"))
+	backupName := fmt.Sprintf("%s-auto-%s", j.ClusterName, time.Now().Format("2006-01-02t15:04:05"))
 
 	backup := &api.MysqlBackup{
 		ObjectMeta: metav1.ObjectMeta{

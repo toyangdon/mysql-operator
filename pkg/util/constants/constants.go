@@ -78,6 +78,12 @@ const (
 	// ShPreStop used in mysql container, if the pod to be deleted is master, then preStop would do GracefulMasterTakeover
 	// before mysql container is deleted.
 	ShPreStop = "pre-shutdown-ha.sh"
+
+	// when local type backup, job will mount backup pvc to "localPvcPath"
+	LocalPvcPath = "/backup"
+
+	//ShDeleteBackup used in deletionjob
+	ShDeleteBackup = "delete-backup.sh"
 )
 
 var (
