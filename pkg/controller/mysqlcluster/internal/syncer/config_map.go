@@ -268,7 +268,7 @@ do
     echo "info: skip ${file}"
     continue;
   fi; 
-  filedate=$(echo ${line#*auto-}|cut -d'.' -f1);
+  filedate=$(echo ${line#*auto-}|cut -d'.' -f1|awk -F"-" '{printf("%s-%s-%s:%s:%s",$1,$2,$3,$4,$5)}');
   filedate1=$(date +%s -d "${filedate}");
   comparedate=$(date +%s -d "-$2 days");
   if [ ${comparedate} -gt ${filedate1} ];then 
@@ -277,7 +277,7 @@ do
   else
     echo "info: skip ${file}"  
   fi
-done    
+done   
 `
 	return data
 }
