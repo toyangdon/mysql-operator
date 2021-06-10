@@ -18,7 +18,6 @@ package syncer
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/imdario/mergo"
@@ -231,7 +230,7 @@ func (s *deletionJobSyncer) ensureContainers() []core.Container {
 		}
 		container.Command = []string{"/tmp/" + constants.ShDeleteBackup}
 		rootPath := constants.LocalPvcPath + strings.Split(s.cluster.Spec.BackupURL, ":")[1]
-		container.Args = []string{rootPath, strconv.Itoa(s.cluster.Spec.BackupSaveDays), constants.RcloneConfigFile}
+		container.Args = []string{rootPath, "10", constants.RcloneConfigFile}
 	}
 	return []core.Container{container}
 }
