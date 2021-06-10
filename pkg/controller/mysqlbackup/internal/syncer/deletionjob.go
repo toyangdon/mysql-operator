@@ -159,7 +159,7 @@ func (s *deletionJobSyncer) ensurePodSpec() core.PodSpec {
 	// if local type ，job need mount pvc which is named "backup"
 	if strings.HasPrefix(s.cluster.Spec.BackupURL, "local") {
 		fileMode := int32(0555)
-		podSpec.Volumes = make([]core.Volume, 1)
+		podSpec.Volumes = make([]core.Volume, 2)
 		podSpec.Volumes[0].Name = "backup"
 		podSpec.Volumes[0].VolumeSource = core.VolumeSource{
 			PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
